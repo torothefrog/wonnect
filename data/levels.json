@@ -24,8 +24,7 @@
         "GLAVA",
         "LAVA",
         "VAL",
-        "GALA",
-        "ALGA"
+        "GALA"
       ]
     },
     {
@@ -35,7 +34,8 @@
         "SALTO",
         "SOL",
         "LAS",
-        "STO"
+        "STO",
+        "TLA"
       ]
     },
     {
@@ -68,8 +68,7 @@
       "words": [
         "TRAVA",
         "VRAT",
-        "VARA",
-        "TAVA"
+        "VARA"
       ]
     },
     {
@@ -83,17 +82,17 @@
     {
       "letters": "DEVA",
       "words": [
-        "DEVA",
         "VEDA",
-        "DVA"
+        "DVA",
+        "DVE"
       ]
     },
     {
       "letters": "MORJE",
       "words": [
         "MORJE",
-        "ORJE",
-        "MORE"
+        "MORE",
+        "MERO"
       ]
     },
     {
