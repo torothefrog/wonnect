@@ -1,0 +1,108 @@
+{
+  "opis": "Stopnje igre. Za vsako stopnjo doloci crke kolesa (letters) in ciljne besede (words). Besede morajo biti sestavljene samo iz crk kolesa in iz abecede v data/letters.json. Ce besede ni mogoce postaviti v krizanko, postane dodatna (bonus) beseda.",
+  "stopnje": [
+    {
+      "letters": "VODA",
+      "words": [
+        "VODA",
+        "ODA",
+        "DVA",
+        "VOD"
+      ]
+    },
+    {
+      "letters": "OKOT",
+      "words": [
+        "TOK",
+        "OKO",
+        "KOT"
+      ]
+    },
+    {
+      "letters": "GLAVA",
+      "words": [
+        "GLAVA",
+        "LAVA",
+        "VAL",
+        "GALA",
+        "ALGA"
+      ]
+    },
+    {
+      "letters": "SOLAT",
+      "words": [
+        "LAST",
+        "SALTO",
+        "SOL",
+        "LAS",
+        "STO"
+      ]
+    },
+    {
+      "letters": "ČAST",
+      "words": [
+        "ČAST",
+        "ČAS",
+        "SAT"
+      ]
+    },
+    {
+      "letters": "ŠOLAS",
+      "words": [
+        "ŠOLA",
+        "SOL",
+        "LAS",
+        "OSA"
+      ]
+    },
+    {
+      "letters": "ŽELVA",
+      "words": [
+        "ŽELVA",
+        "VAL",
+        "LEV"
+      ]
+    },
+    {
+      "letters": "TRAVA",
+      "words": [
+        "TRAVA",
+        "VRAT",
+        "VARA",
+        "TAVA"
+      ]
+    },
+    {
+      "letters": "REKA",
+      "words": [
+        "REKA",
+        "RAK",
+        "ERA"
+      ]
+    },
+    {
+      "letters": "DEVA",
+      "words": [
+        "DEVA",
+        "VEDA",
+        "DVA"
+      ]
+    },
+    {
+      "letters": "MORJE",
+      "words": [
+        "MORJE",
+        "ORJE",
+        "MORE"
+      ]
+    },
+    {
+      "letters": "TOLPA",
+      "words": [
+        "TOLPA",
+        "POT",
+        "TOP"
+      ]
+    }
+  ]
+}

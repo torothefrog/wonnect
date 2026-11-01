@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<title>Wonnect - povezi črke</title>
+<meta name="description" content="Slovenska igra povezovanja črk: sestavi besede in zapolni križanko.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🔤</text></svg>">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main id="app">
+  <header id="top">
+    <h1>Wonnect</h1>
+    <div id="level-label">Stopnja 1</div>
+  </header>
+
+  <section id="board-wrap" aria-label="Križanka">
+    <div id="board"></div>
+  </section>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <section id="wheel-wrap" aria-label="Kolo črk">
+    <div id="current-word" aria-live="polite"></div>
+    <div id="wheel">
+      <svg id="link-lines" aria-hidden="true"></svg>
+      <!-- gumbe črk doda app.js -->
+    </div>
+    <div id="wheel-actions">
+      <button id="shuffle" type="button" title="Premešaj črke" aria-label="Premešaj črke"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="M4 4l5 5"/></svg></button>
+      <button id="clear" type="button" title="Počisti izbor">✕</button>
+    </div>
+  </section>
+
+  <footer id="hud">
+    <span id="found-count"></span>
+    <span id="bonus-count"></span>
+  </footer>
+
+  <div id="level-complete" hidden>
+    <div class="card">
+      <h2>Stopnja končana! 🎉</h2>
+      <p id="complete-stats"></p>
+      <button id="next-level" type="button">Naslednja stopnja</button>
+    </div>
+  </div>
+
+  <div id="all-complete" hidden>
+    <div class="card">
+      <h2>Vse stopnje rešene! 🏆</h2>
+      <p>Izdat si. Besede in stopnje lahko urediš v podatkovnih datotekah repozitorija.</p>
+      <button id="restart" type="button">Igraj znova</button>
+    </div>
+  </div>
+
+  <div id="load-error" hidden>
+    <div class="card">
+      <h2>Napaka pri nalaganju</h2>
+      <p id="load-error-msg"></p>
+    </div>
+  </div>
+</main>
+<script src="game.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

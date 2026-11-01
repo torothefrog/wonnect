@@ -1,0 +1,5 @@
+{
+  "jezik": "slovenscina",
+  "opis": "Dovoljene crke igre. Uredi ta seznam, ce zelis dodati ali odstraniti crke; stopnje in besede se preverjajo proti njemu. Slovenska abeceda (25 crk):",
+  "crke": ["A","B","C","Č","D","E","F","G","H","I","J","K","L","M","N","O","P","R","S","Š","T","U","V","Z","Ž"]
+}
