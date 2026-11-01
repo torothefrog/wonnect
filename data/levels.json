@@ -1,5 +1,5 @@
 {
-  "opis": "Stopnje igre. Za vsako stopnjo doloci crke kolesa (letters) in ciljne besede (words). Besede morajo biti sestavljene samo iz crk kolesa in iz abecede v data/letters.json. Ce besede ni mogoce postaviti v krizanko, postane dodatna (bonus) beseda.",
+  "opis": "Stopnje igre. Za vsako stopnjo doloci crke kolesa (letters) in ciljne besede (words). Besede morajo biti sestavljene samo iz crk kolesa in iz abecede v data/letters.json. Ce besede ni mogoce postaviti v krizanko, postane dodatna (bonus) beseda. Ob sveži igri se nakljucno izbere 12 stopenj iz tega nabora.",
   "stopnje": [
     {
       "letters": "VODA",
@@ -101,6 +101,139 @@
         "TOLPA",
         "POT",
         "TOP"
+      ]
+    },
+    {
+      "letters": "STRELA",
+      "words": [
+        "STRELA",
+        "STAR",
+        "LAST",
+        "LES",
+        "ERA"
+      ]
+    },
+    {
+      "letters": "VEČER",
+      "words": [
+        "VEČER",
+        "REČ",
+        "VEČ"
+      ]
+    },
+    {
+      "letters": "KOZAR",
+      "words": [
+        "KOZA",
+        "ZORA",
+        "RAK"
+      ]
+    },
+    {
+      "letters": "DEŽAN",
+      "words": [
+        "DEŽ",
+        "DAN",
+        "ŽENA"
+      ]
+    },
+    {
+      "letters": "STOLP",
+      "words": [
+        "STOLP",
+        "STOL",
+        "TOP",
+        "POT"
+      ]
+    },
+    {
+      "letters": "ZVEZDA",
+      "words": [
+        "ZVEZDA",
+        "VEDA",
+        "DVA"
+      ]
+    },
+    {
+      "letters": "LEPOTA",
+      "words": [
+        "LEPOTA",
+        "LETA",
+        "PETA",
+        "TOP",
+        "POT"
+      ]
+    },
+    {
+      "letters": "ROŽANA",
+      "words": [
+        "ROŽA",
+        "RANA",
+        "NORA",
+        "ŽAR"
+      ]
+    },
+    {
+      "letters": "SESTRA",
+      "words": [
+        "SESTRA",
+        "TRES",
+        "STAR",
+        "RES",
+        "ERA"
+      ]
+    },
+    {
+      "letters": "ČRNA",
+      "words": [
+        "ČRN",
+        "RAN",
+        "ČAR"
+      ]
+    },
+    {
+      "letters": "ŠOLARS",
+      "words": [
+        "ŠOLAR",
+        "ŠOLA",
+        "SOL",
+        "LAS",
+        "OSA"
+      ]
+    },
+    {
+      "letters": "DOMA",
+      "words": [
+        "DOM",
+        "DOMA",
+        "MODA",
+        "DAM"
+      ]
+    },
+    {
+      "letters": "GRADU",
+      "words": [
+        "GRAD",
+        "DRAG",
+        "DRUG"
+      ]
+    },
+    {
+      "letters": "SPORTA",
+      "words": [
+        "SPORT",
+        "SPOR",
+        "PAST",
+        "RAST",
+        "STAR"
+      ]
+    },
+    {
+      "letters": "MIRA",
+      "words": [
+        "MIR",
+        "RIM",
+        "RAM"
       ]
     }
   ]

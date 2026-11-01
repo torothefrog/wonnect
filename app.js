@@ -11,42 +11,18 @@
     current: document.getElementById('current-word'),
     toast: document.getElementById('toast'),
     levelLabel: document.getElementById('level-label'),
+    progressFill: document.getElementById('progress-fill'),
     foundCount: document.getElementById('found-count'),
     bonusCount: document.getElementById('bonus-count'),
     complete: document.getElementById('level-complete'),
     completeStats: document.getElementById('complete-stats'),
+    completeBonus: document.getElementById('complete-bonus'),
     allComplete: document.getElementById('all-complete'),
     loadError: document.getElementById('load-error'),
     loadErrorMsg: document.getElementById('load-error-msg')
   };
 
-  /* Podpis podatkov: ce se datoteke spremenijo, shranjeni najdeni besedi morda ne veljata vec. */
-  function signature(letters, levels, words) {
-    var s = JSON.stringify([letters, levels, words]);
-    var h = 5381;
-    for (var i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) >>> 0;
-    return String(h);
-  }
-
-  function freshSave(sig) { return { v: 1, sig: sig, level: 0, levels: {} }; }
-
-  function loadSave(sig) {
-    try {
-      var raw = window.localStorage.getItem(SAVE_KEY);
-      if (!raw) return freshSave(sig);
-      var data = JSON.parse(raw);
-      if (!data || data.v !== 1 || typeof data.level !== 'number' || typeof data.levels !== 'object') {
-        return freshSave(sig);
-      }
-      if (data.sig !== sig) {
-        /* Podatki igre so se spremenili: ohrani polozaj stopnje, ponastavi najdbe. */
-        return { v: 1, sig: sig, level: Math.min(data.level, 9999) | 0, levels: {} };
-      }
-      return data;
-    } catch (e) {
-      return freshSave(sig);
-    }
-  }
+  function newSeed() { return Math.floor(Math.random() * 2147483647); }
 
   function persist() {
     try { window.localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) { /* brez shrambe */ }
@@ -60,21 +36,23 @@
     toastTimer = setTimeout(function () { el.toast.classList.remove('show'); }, 1400);
   }
 
-  var state = null; /* { defs, alphabet, words, built[], save, game, sel[] } */
+  var state = null; /* { builtByKey, keys, keys12, save, game } */
   var save = null;
 
   function buildAll(defs, alphabet, words) {
-    var built = [];
+    var builtByKey = {};
+    var keys = [];
     var errs = [];
+    var dictSet = new Set(Wonnect.normalizeLetters(words));
     defs.forEach(function (def, i) {
       var b = Wonnect.buildLevel(def, alphabet, words, i);
-      if (b.errors && b.errors.length) errs.push('Stopnja ' + (i + 1) + ': ' + b.errors.join('; '));
-      else {
-        b.dictionarySet = new Set(Wonnect.normalizeLetters(words));
-        built.push(b);
-      }
+      if (b.errors && b.errors.length) { errs.push('Stopnja ' + (i + 1) + ': ' + b.errors.join('; ')); return; }
+      b.dictionarySet = dictSet;
+      var key = Wonnect.levelKey(def);
+      builtByKey[key] = b;
+      keys.push(key);
     });
-    return { built: built, errors: errs };
+    return { builtByKey: builtByKey, keys: keys, errors: errs };
   }
 
   function renderBoard(built, revealed) {
@@ -87,14 +65,9 @@
       for (var c = 0; c < g.cols; c++) {
         var d = document.createElement('div');
         var letter = map[r + ',' + c];
-        if (letter === undefined) {
-          d.className = 'cell void';
-        } else if (revealed.has(r + ',' + c)) {
-          d.className = 'cell open';
-          d.textContent = letter;
-        } else {
-          d.className = 'cell slot';
-        }
+        if (letter === undefined) d.className = 'cell void';
+        else if (revealed.has(r + ',' + c)) { d.className = 'cell open'; d.textContent = letter; }
+        else d.className = 'cell slot';
         el.board.appendChild(d);
       }
     }
@@ -104,7 +77,7 @@
   function sizeCells(g) {
     var w = el.boardWrap.clientWidth - 16;
     var h = el.boardWrap.clientHeight - 16;
-    var size = Math.floor(Math.min(w / g.cols, h / g.rows, 56));
+    var size = Math.floor(Math.min(w / g.cols, h / g.rows, 58));
     if (size < 22) size = 22;
     el.board.style.setProperty('--cell-size', size + 'px');
   }
@@ -115,7 +88,7 @@
     el.lines.innerHTML = '';
     letterButtons = [];
     var n = letters.length;
-    var radius = 38; /* odstotkov polmera */
+    var radius = 38;
     letters.forEach(function (ch, i) {
       var angle = -Math.PI / 2 + (i * 2 * Math.PI) / n;
       var b = document.createElement('button');
@@ -131,7 +104,7 @@
   }
 
   var dragging = false;
-  var sel = []; /* izbrane crke (gumbi) */
+  var sel = [];
 
   function redrawLines(pointer) {
     el.lines.innerHTML = '';
@@ -151,6 +124,7 @@
 
   function updateCurrent() {
     el.current.textContent = sel.map(function (b) { return b.dataset.letter; }).join('');
+    el.current.classList.toggle('active', sel.length > 0);
   }
 
   function clearSel() {
@@ -204,40 +178,47 @@
     kratek: 'Prekratko.'
   };
 
+  function currentKey() { return save.order[save.pos]; }
+
   function submit(word) {
     var res = state.game.submit(word);
     toast(FEEDBACK[res.kind] || res.kind);
     if (res.kind === 'zadetek' || res.kind === 'bonus') {
-      var rec = save.levels[save.level] || (save.levels[save.level] = { found: [], bonus: [], complete: false });
+      var key = currentKey();
+      var rec = save.levels[key] || (save.levels[key] = { found: [], bonus: [], complete: false });
       if (res.kind === 'zadetek') { if (!rec.found.includes(res.word)) rec.found.push(res.word); }
-      else { if (!rec.bonus.includes(res.word)) rec.bonus.push(res.word); }
+      else if (!rec.bonus.includes(res.word)) rec.bonus.push(res.word);
       refresh();
       persist();
       if (res.kind === 'zadetek' && state.game.isComplete()) {
         rec.complete = true;
         persist();
         var c = state.game.counts();
-        el.completeStats.textContent = 'Najdenih ' + c.found + ' besed, ' + c.bonus + ' dodatnih.';
-        el.complete.hidden = false;
+        el.completeStats.textContent = 'Najdenih ' + c.found + ' besed' +
+          (c.bonus ? ', ' + c.bonus + ' dodatnih.' : '.');
+        el.completeBonus.textContent = c.bonus ? 'Dodatne: ' + state.game.bonusWords().join(', ') : '';
+        el.progressFill.style.width = ((save.pos + 1) / save.order.length * 100) + '%';
+        setTimeout(function () { el.complete.hidden = false; }, 450);
       }
     }
   }
 
   function refresh() {
-    renderBoard(state.built[save.level], state.game.revealedCells());
+    renderBoard(state.builtByKey[currentKey()], state.game.revealedCells());
     var c = state.game.counts();
     el.foundCount.textContent = 'Besede: ' + c.found + ' / ' + c.target;
     el.bonusCount.textContent = 'Dodatne: ' + c.bonus;
-    el.levelLabel.textContent = 'Stopnja ' + (save.level + 1) + ' / ' + state.built.length;
+    el.levelLabel.textContent = 'Stopnja ' + (save.pos + 1) + ' / ' + save.order.length;
+    el.progressFill.style.width = ((save.pos) / save.order.length * 100) + '%';
   }
 
-  function startLevel(idx) {
-    save.level = idx;
+  function startLevel(pos) {
+    save.pos = pos;
     el.complete.hidden = true;
     el.allComplete.hidden = true;
-    var built = state.built[idx];
+    var built = state.builtByKey[currentKey()];
     state.game = Wonnect.createGame(built);
-    var rec = save.levels[idx];
+    var rec = save.levels[currentKey()];
     if (rec) {
       (rec.found || []).forEach(function (w) { state.game.submit(w); });
       (rec.bonus || []).forEach(function (w) { state.game.submit(w); });
@@ -247,8 +228,17 @@
     persist();
   }
 
+  function newGame() {
+    var fresh = Wonnect.freshSave(save.sig, state.keys, newSeed());
+    save.seed = fresh.seed;
+    save.order = fresh.order;
+    save.levels = {};
+    save.pos = 0;
+    startLevel(0);
+  }
+
   function shuffleWheel() {
-    var b = state.built[save.level];
+    var b = state.builtByKey[currentKey()];
     var arr = b.letters.slice();
     for (var i = arr.length - 1; i > 0; i--) {
       var j = Math.floor(Math.random() * (i + 1));
@@ -274,15 +264,20 @@
       var defs = files[1].stopnje;
       var words = files[2].besede;
       var result = buildAll(defs, alphabet, words);
-      if (!result.built.length) {
+      if (!result.keys.length) {
         showError('Nobena stopnja ni veljavna. ' + result.errors.join(' '));
         return;
       }
       if (result.errors.length) console.warn(result.errors.join('\n'));
-      state = { built: result.built };
-      save = loadSave(signature(alphabet, defs, words));
-      if (save.level >= result.built.length) save.level = 0;
-      startLevel(save.level);
+      state = {
+        builtByKey: result.builtByKey,
+        keys: result.keys,
+        keys12: result.keys.slice(0, 12)
+      };
+      var rawSave = null;
+      try { rawSave = window.localStorage.getItem(SAVE_KEY); } catch (e) {}
+      save = Wonnect.loadSaveRaw(rawSave, Wonnect.lettersSignature(alphabet, words), result.keys, state.keys12, newSeed());
+      startLevel(save.pos);
       if (result.errors.length) toast('Opozorilo: ' + result.errors.length + ' stopnja(e) preskočena(e).');
     }).catch(function (err) {
       showError('Podatkov ni bilo mogoče naložiti: ' + err.message);
@@ -296,15 +291,12 @@
   document.getElementById('shuffle').addEventListener('click', shuffleWheel);
   document.getElementById('clear').addEventListener('click', clearSel);
   document.getElementById('next-level').addEventListener('click', function () {
-    if (save.level + 1 < state.built.length) startLevel(save.level + 1);
-    else { el.complete.hidden = true; el.allComplete.hidden = false; }
+    if (save.pos + 1 < save.order.length) startLevel(save.pos + 1);
+    else { el.complete.hidden = true; el.progressFill.style.width = '100%'; el.allComplete.hidden = false; }
   });
-  document.getElementById('restart').addEventListener('click', function () {
-    save.levels = {};
-    startLevel(0);
-  });
+  document.getElementById('restart').addEventListener('click', newGame);
   window.addEventListener('resize', function () {
-    if (state) renderBoard(state.built[save.level], state.game.revealedCells());
+    if (state && state.game) renderBoard(state.builtByKey[currentKey()], state.game.revealedCells());
   });
 
   boot();

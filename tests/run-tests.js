@@ -105,25 +105,54 @@ levels.forEach((lv, i) => {
   ok(g4.revealedCells().size > 3, 'razkritje se siri');
 }
 
-/* --- vztrajnost: format shranjevanja (logika iz app.js) --- */
+/* --- izbira stopenj (raznolikost) --- */
 {
-  function freshSave(sig) { return { v: 1, sig: sig, level: 0, levels: {} }; }
-  function loadSaveRaw(raw, sig) {
-    try {
-      if (!raw) return freshSave(sig);
-      const data = JSON.parse(raw);
-      if (!data || data.v !== 1 || typeof data.level !== 'number' || typeof data.levels !== 'object') return freshSave(sig);
-      if (data.sig !== sig) return { v: 1, sig: sig, level: Math.min(data.level, 9999) | 0, levels: {} };
-      return data;
-    } catch (e) { return freshSave(sig); }
-  }
-  eq(loadSaveRaw(null, 's1').level, 0, 'brez shrambe = nova igra');
-  eq(loadSaveRaw('{pokvarjeno', 's1').level, 0, 'pokvarjen JSON = nova igra');
-  eq(loadSaveRaw('{"v":2,"level":5,"levels":{}}', 's1').level, 0, 'napacna razlicica = nova igra');
-  const ch = loadSaveRaw(JSON.stringify({ v: 1, sig: 'star', level: 3, levels: { '3': { found: ['VODA'] } } }), 'nov');
-  ok(ch.level === 3 && Object.keys(ch.levels).length === 0, 'sprememba podatkov ohrani stopnjo, ponastavi najdbe');
-  const keep = loadSaveRaw(JSON.stringify({ v: 1, sig: 's1', level: 2, levels: { '2': { found: ['TOK'], bonus: ['DVA'], complete: false } } }), 's1');
-  ok(keep.levels['2'].found[0] === 'TOK', 'nespremenjeni podatki ohranijo najdbe');
+  const a = W.selectLevelOrder(27, 12, 12345);
+  const b = W.selectLevelOrder(27, 12, 12345);
+  eq(a, b, 'isti seed = ista izbira (ponovljivost)');
+  eq(new Set(a).size, 12, '12 razlicnih stopenj');
+  ok(a.every(i => i >= 0 && i < 27), 'indeksi znotraj nabora');
+  const c = W.selectLevelOrder(27, 12, 999);
+  ok(JSON.stringify(a) !== JSON.stringify(c), 'drug seed = drugacna izbira');
+  eq(W.selectLevelOrder(5, 12, 1).length, 5, 'manjsi nabor = manj stopenj');
+}
+
+/* --- vztrajnost: v2 shranjevanje (iz game.js) --- */
+{
+  const letters2 = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/letters.json'), 'utf8')).crke;
+  const words2 = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/words.json'), 'utf8')).besede;
+  const lvls = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/levels.json'), 'utf8')).stopnje;
+  const keys = lvls.map(W.levelKey);
+  const keys12 = keys.slice(0, 12);
+  const sig = W.lettersSignature(letters2, words2);
+
+  const fresh = W.loadSaveRaw(null, sig, keys, keys12, 42);
+  ok(fresh.v === 2 && fresh.order.length === 12 && fresh.pos === 0, 'brez shrambe = svezha igra z 12 izbranimi');
+  ok(fresh.order.every(k => keys.includes(k)), 'izbrane stopnje obstajajo v naboru');
+
+  eq(W.loadSaveRaw('{pokvarjeno', sig, keys, keys12, 42).v, 2, 'pokvarjen JSON = svezha igra');
+  eq(W.loadSaveRaw('{"v":9}', sig, keys, keys12, 42).pos, 0, 'napacna razlicica = svezha igra');
+
+  /* selitev v1: ohranjeni najdbe in polozaj */
+  const v1 = JSON.stringify({ v: 1, sig: 'star', level: 2, levels: { '2': { found: ['GLAVA'], bonus: ['SOL'], complete: false } } });
+  const mig = W.loadSaveRaw(v1, sig, keys, keys12, 42);
+  ok(mig.v === 2 && mig.pos === 2 && mig.order.length === 12, 'v1 -> v2: polozaj ohranjen');
+  eq(mig.order, keys12, 'v1 -> v2: vrstni red = prvih 12 stopenj');
+  eq(mig.levels[keys12[2]].found, ['GLAVA'], 'v1 -> v2: najdbe preseljene na kljuc stopnje');
+
+  /* sprememba abecede/slovarja: polozaj in izbira ostaneta, najdbe se ponastavijo */
+  const ch = W.loadSaveRaw(JSON.stringify({ v: 2, sig: 'drug', seed: 7, order: keys12, pos: 3, levels: { [keys12[3]]: { found: ['X'] } } }), sig, keys, keys12, 42);
+  ok(ch.pos === 3 && ch.order.length === 12 && Object.keys(ch.levels).length === 0, 'sprememba slovarja: ohrani polozaj, ponastavi najdbe');
+
+  /* odstranjena stopnja se izloci iz reda */
+  const fewer = keys.slice(1);
+  const rec = W.loadSaveRaw(JSON.stringify({ v: 2, sig: sig, seed: 7, order: keys12, pos: 0, levels: {} }), sig, fewer, keys12, 42);
+  ok(rec.order.every(k => fewer.includes(k)), 'odstranjene stopnje se izlocijo iz reda');
+
+  /* isti seed ob svezi igri = enaka izbira (shranjena igra se obnove enako) */
+  const r1 = W.freshSave(sig, keys, 555);
+  const r2 = W.freshSave(sig, keys, 555);
+  eq(r1.order, r2.order, 'svezha igra z istim seed-om = enak vrstni red');
 }
 
 console.log('');

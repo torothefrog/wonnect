@@ -21,7 +21,13 @@ Vse podatke lahko urejaš brez spreminjanja kode:
 | --- | --- |
 | `data/letters.json` | **Seznam črk** (abeceda), ki jih igra uporablja. |
 | `data/words.json` | Slovar veljavnih besed za ciljne in dodatne besede. |
-| `data/levels.json` | Stopnje: črke kolesa (`letters`) in ciljne besede (`words`). |
+| `data/levels.json` | Nabor stopenj: črke kolesa (`letters`) in ciljne besede (`words`). |
+
+Ob vsaki **sveži igri** se iz nabora naključno izbere 12 stopenj (trenutno jih je 27),
+zato je prva stopnja vsakič drugačna. Izbira se shrani v localStorage skupaj z napredkom,
+zato ponovni zagon brskalnika nadaljuje isto izbiro; naključna je samo nova igra.
+Napredek je vezan na vsebino stopnje: če besede stopnje spremeniš, se ponastavi samo
+napredek tiste stopnje.
 
 Pravila:
 

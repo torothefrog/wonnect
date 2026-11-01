@@ -225,8 +225,95 @@
     };
   }
 
+  /* Podpis abecede+slovarja (sprememba ponastavi najdbe, ne pa izbire stopenj). */
+  function lettersSignature(letters, words) {
+    const s = JSON.stringify([letters, words]);
+    let h = 5381;
+    for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) >>> 0;
+    return String(h);
+  }
+
+  const LEVELS_PER_GAME = 12;
+
+  function freshSave(sig, keys, seed) {
+    const order = selectLevelOrder(keys.length, LEVELS_PER_GAME, seed).map(function (i) { return keys[i]; });
+    return { v: 2, sig: sig, seed: seed, order: order, pos: 0, levels: {} };
+  }
+
+  /* v1 (prva razlicica): fiksnih 12 stopenj, kljucanih po indeksu; keys12 so njihovi kljuci. */
+  function migrateV1(data, sig, keys12, keys, seed) {
+    const save = freshSave(sig, keys, seed);
+    if (keys12.length) {
+      save.order = keys12.slice();
+      save.pos = Math.min(Math.max(data.level | 0, 0), Math.max(keys12.length - 1, 0));
+      Object.keys(data.levels || {}).forEach(function (idx) {
+        const rec = data.levels[idx];
+        const key = keys12[+idx];
+        if (key && rec && typeof rec === 'object') {
+          save.levels[key] = {
+            found: Array.isArray(rec.found) ? rec.found : [],
+            bonus: Array.isArray(rec.bonus) ? rec.bonus : [],
+            complete: !!rec.complete
+          };
+        }
+      });
+    }
+    return save;
+  }
+
+  function reconcileSave(save, availableKeys) {
+    const set = new Set(availableKeys);
+    save.order = (save.order || []).filter(function (k) { return set.has(k); });
+    if (!save.order.length) return null;
+    if (typeof save.pos !== 'number' || save.pos < 0 || save.pos >= save.order.length) save.pos = 0;
+    if (!save.levels || typeof save.levels !== 'object') save.levels = {};
+    return save;
+  }
+
+  /* Prebere surovi niz iz shrambe. Nikoli ne vrze napake; ob tezavi vrne svezo igro. */
+  function loadSaveRaw(raw, sig, keys, keys12, seed) {
+    try {
+      if (!raw) return freshSave(sig, keys, seed);
+      const data = JSON.parse(raw);
+      if (!data || typeof data !== 'object') return freshSave(sig, keys, seed);
+      if (data.v === 1) return migrateV1(data, sig, keys12, keys, seed);
+      if (data.v !== 2 || !Array.isArray(data.order)) return freshSave(sig, keys, seed);
+      if (data.sig !== sig) { data.sig = sig; data.levels = {}; }
+      return reconcileSave(data, keys) || freshSave(sig, keys, seed);
+    } catch (e) {
+      return freshSave(sig, keys, seed);
+    }
+  }
+
+  /* Stabilna identiteta stopnje: crke + urejene besede. Sprememba besed stopnje
+     spremeni kljuc, zato se napredek samo tiste stopnje ponastavi. */
+  function levelKey(def) {
+    const letters = String(def && def.letters || '').toLocaleUpperCase('sl');
+    const words = (def && def.words || []).map(normalizeWord).sort();
+    return letters + '::' + words.join(',');
+  }
+
+  /* Nakljucna, ponovljiva izbira stopenj za svezo igro (isti seed = ista izbira). */
+  function selectLevelOrder(poolSize, count, seed) {
+    const rng = mulberry32(seed);
+    const idx = [];
+    for (let i = 0; i < poolSize; i++) idx.push(i);
+    for (let i = idx.length - 1; i > 0; i--) {
+      const j = Math.floor(rng() * (i + 1));
+      const t = idx[i]; idx[i] = idx[j]; idx[j] = t;
+    }
+    return idx.slice(0, Math.max(0, Math.min(count, poolSize)));
+  }
+
   return {
     mulberry32: mulberry32,
+    levelKey: levelKey,
+    selectLevelOrder: selectLevelOrder,
+    lettersSignature: lettersSignature,
+    LEVELS_PER_GAME: LEVELS_PER_GAME,
+    freshSave: freshSave,
+    migrateV1: migrateV1,
+    loadSaveRaw: loadSaveRaw,
     normalizeWord: normalizeWord,
     normalizeLetters: normalizeLetters,
     usesAlphabet: usesAlphabet,
