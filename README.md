@@ -43,6 +43,25 @@ python3 -m http.server 8000
 # odpri http://localhost:8000
 ```
 
+## Leksikon: obseg in preverjanje
+
+Slovar (`data/words.json`) je **ročno izbran seznam približno 180 pogostih slovenskih besed**,
+ni izčrpen. Veljavne slovenske besede, ki niso na seznamu, igra ne šteje kot dodatne (bonus)
+besede. Seznam lahko kadar koli razširiš.
+
+Besede niso kopirane iz nobenega slovarja; izbrane so bile samostojno, nato pa so bile
+**preverjene** proti dvema javnima viroma (1. november 2026):
+
+- frekvenčni seznam slovenskih besed iz paketa `wordfreq` (Luminoso; podatki CC BY-SA 4.0),
+- seznamu oblik, pridobljenemu iz slovenskega Wikislovarja (CC BY-SA 3.0).
+
+Opombi:
+
+- To je heuristična kontrola, ne avtoritativna jezikoslovna validacija: prisotnost v korpusu
+  potrdi, da se oblika uporablja, ne pa nujno standardnosti; redke oblike lahko manjkajo.
+- Pri dodajanju novih besed v `words.json` ali `levels.json` jih ponovno preveri na enak način
+  in pazi na točne diakritike (č/š/ž).
+
 ## Testi
 
 ```
