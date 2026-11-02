@@ -9,8 +9,9 @@
 <meta name="apple-mobile-web-app-title" content="Wonnect">
 <title>Wonnect - povezi črke</title>
 <meta name="description" content="Slovenska igra povezovanja črk: sestavi besede in zapolni križanko.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🔤</text></svg>">
-<link rel="stylesheet" href="style.css?v=4">
+<link rel="icon" href="assets/favicon.svg">
+<link rel="preload" href="assets/fonts/nunito-latin-ext.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
 <main id="app">
@@ -18,7 +19,7 @@
     <h1>Wonnect</h1>
     <div id="top-right">
       <div id="level-label">Stopnja 1</div>
-      <button id="menu-btn" type="button" aria-label="Meni stopenj" title="Meni stopenj">🗺️</button>
+      <button id="menu-btn" type="button" aria-label="Meni stopenj" title="Meni stopenj"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor"><path d="M0 0h24v24H0z" fill="none"/><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/></svg></button>
     </div>
   </header>
   <div id="progress"><div id="progress-fill"></div></div>
@@ -28,7 +29,7 @@
     <div id="board"></div>
   </section>
 
-  <div id="toast" role="status" aria-live="polite"><span id="toast-icon" aria-hidden="true"></span><span id="toast-text"></span><span id="toast-close" aria-hidden="true">✕</span></div>
+  <div id="toast" role="status" aria-live="polite"><span id="toast-icon" aria-hidden="true"></span><span id="toast-text"></span><span id="toast-close" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></span></div>
 
   <section id="wheel-wrap" aria-label="Kolo črk">
     <div id="current-word" aria-live="polite"></div>
@@ -37,8 +38,8 @@
       <!-- gumbe črk doda app.js -->
     </div>
     <div id="wheel-actions">
-      <button id="shuffle" type="button" title="Premešaj črke" aria-label="Premešaj črke"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="M4 4l5 5"/></svg></button>
-      <button id="clear" type="button" title="Počisti izbor">✕</button>
+      <button id="shuffle" type="button" title="Premešaj črke" aria-label="Premešaj črke"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor"><path d="M0 0h24v24H0z" fill="none"/><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg></button>
+      <button id="clear" type="button" title="Počisti izbor" aria-label="Počisti izbor"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
     </div>
   </section>
 
@@ -49,35 +50,35 @@
 
   <div id="level-menu" hidden>
     <div class="card menu-card">
-      <h2>🗺️ Stopnje</h2>
+      <h2><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor"><path d="M0 0h24v24H0z" fill="none"/><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/></svg> Stopnje</h2>
       <div id="level-grid"></div>
-      <button id="toggle-hearts" type="button" class="hearts-btn">🤍 Srčki: IZKLOP</button>
-      <button id="reset-game" type="button" class="reset-btn">🔄 Začni od začetka</button>
-      <button id="menu-close" type="button" class="close-btn">✕ Zapri</button>
+      <button id="toggle-hearts" type="button" class="hearts-btn"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor"><path d="M0 0h24v24H0z" fill="none"/><path d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z"/></svg> Srčki: IZKLOP</button>
+      <button id="reset-game" type="button" class="reset-btn"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor"><path d="M0 0h24v24H0z" fill="none"/><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg> Začni od začetka</button>
+      <button id="menu-close" type="button" class="close-btn"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg> Zapri</button>
     </div>
   </div>
 
   <div id="out-of-hearts" hidden>
     <div class="card">
-      <h2>💔 Ni več srčkov!</h2>
+      <h2><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor"><path d="M0 0h24v24H0z" fill="none"/><path d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z"/></svg> Ni več srčkov!</h2>
       <p>Nič hudega! Tvoje besede ostanejo. Kaj zdaj?</p>
-      <button id="hearts-retry" type="button">🔄 Poskusi znova</button>
-      <button id="hearts-menu" type="button" class="secondary-btn">🗺️ Meni</button>
+      <button id="hearts-retry" type="button"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor"><path d="M0 0h24v24H0z" fill="none"/><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg> Poskusi znova</button>
+      <button id="hearts-menu" type="button" class="secondary-btn"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor"><path d="M0 0h24v24H0z" fill="none"/><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/></svg> Meni</button>
     </div>
   </div>
 
   <div id="level-complete" hidden>
     <div class="card">
-      <h2>Stopnja končana! 🎉</h2>
+      <h2>Stopnja končana! <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor"><rect fill="none" height="24" width="24"/><path d="M19,5h-2V3H7v2H5C3.9,5,3,5.9,3,7v1c0,2.55,1.92,4.63,4.39,4.94c0.63,1.5,1.98,2.63,3.61,2.96V19H7v2h10v-2h-4v-3.1 c1.63-0.33,2.98-1.46,3.61-2.96C19.08,12.63,21,10.55,21,8V7C21,5.9,20.1,5,19,5z M5,8V7h2v3.82C5.84,10.4,5,9.3,5,8z M19,8 c0,1.3-0.84,2.4-2,2.82V7h2V8z"/></svg></h2>
       <p id="complete-stats"></p>
       <p id="complete-bonus"></p>
-      <button id="next-level" type="button">➡️ Naslednja stopnja</button>
+      <button id="next-level" type="button"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg> Naslednja stopnja</button>
     </div>
   </div>
 
   <div id="all-complete" hidden>
     <div class="card">
-      <h2>Vse stopnje rešene! 🏆</h2>
+      <h2>Vse stopnje rešene! <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor"><rect fill="none" height="24" width="24"/><path d="M19,5h-2V3H7v2H5C3.9,5,3,5.9,3,7v1c0,2.55,1.92,4.63,4.39,4.94c0.63,1.5,1.98,2.63,3.61,2.96V19H7v2h10v-2h-4v-3.1 c1.63-0.33,2.98-1.46,3.61-2.96C19.08,12.63,21,10.55,21,8V7C21,5.9,20.1,5,19,5z M5,8V7h2v3.82C5.84,10.4,5,9.3,5,8z M19,8 c0,1.3-0.84,2.4-2,2.82V7h2V8z"/></svg></h2>
       <p>Izdat si. Besede in stopnje lahko urediš v podatkovnih datotekah repozitorija.</p>
       <button id="restart" type="button">Igraj znova</button>
     </div>
@@ -90,7 +91,8 @@
     </div>
   </div>
 </main>
+<script src="icons.js?v=5"></script>
 <script src="game.js?v=4"></script>
-<script src="app.js?v=4"></script>
+<script src="app.js?v=5"></script>
 </body>
 </html>

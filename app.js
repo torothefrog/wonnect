@@ -1,6 +1,11 @@
 /* Wonnect - uporabniski vmesnik (DOM). Logika je v game.js. */
 (function () {
   'use strict';
+  var icon = window.WonnectIcons;
+  function label(node, name, text) {
+    node.innerHTML = icon(name);
+    node.appendChild(document.createTextNode(text));
+  }
   var SAVE_KEY = 'wonnect-napredek-v1';
 
   var el = {
@@ -38,7 +43,7 @@
   var toastText = document.getElementById('toast-text');
   /* Otroški toast: ostane viden, dokler se ga ne tapne (brez samodejnega skritja). */
   function toast(icon, msg) {
-    toastIcon.textContent = icon;
+    toastIcon.innerHTML = window.WonnectIcons(icon);
     toastText.textContent = msg;
     el.toast.classList.remove('show', 'pop');
     void el.toast.offsetWidth;
@@ -184,31 +189,31 @@
   /* Ikonca + kratko besedilo; {w} se zamenja z vneseno besedo. Vec variant = igralno. */
   var FEEDBACK = {
     zadetek: [
-      { icon: '🎉', text: 'Bravo!' },
-      { icon: '⭐', text: 'Super!' },
-      { icon: '✅', text: 'Pravilno!' }
+      { icon: 'trophy', text: 'Bravo!' },
+      { icon: 'star', text: 'Super!' },
+      { icon: 'check', text: 'Pravilno!' }
     ],
     bonus: [
-      { icon: '⭐', text: 'Dodatna beseda!' },
-      { icon: '🌟', text: 'Bonus beseda!' }
+      { icon: 'star', text: 'Dodatna beseda!' },
+      { icon: 'star', text: 'Bonus beseda!' }
     ],
     'ponovitev': [
-      { icon: '🔁', text: '"{w}" imaš že!' }
+      { icon: 'repeat', text: '"{w}" imaš že!' }
     ],
     'ponovitev-bonus': [
-      { icon: '🔁', text: '"{w}" je že na seznamu!' }
+      { icon: 'repeat', text: '"{w}" je že na seznamu!' }
     ],
     neznan: [
-      { icon: '🤪', text: 'Hihi, "{w}" ni prava beseda!' },
-      { icon: '🙈', text: 'Ups, "{w}"? Te besede ni!' },
-      { icon: '🤔', text: 'Hmm, "{w}" ne poznam!' },
-      { icon: '🐸', text: 'Kva? "{w}" ni beseda!' }
+      { icon: 'smile', text: 'Hihi, "{w}" ni prava beseda!' },
+      { icon: 'smile', text: 'Ups, "{w}"? Te besede ni!' },
+      { icon: 'think', text: 'Hmm, "{w}" ne poznam!' },
+      { icon: 'smile', text: 'Kva? "{w}" ni beseda!' }
     ],
     crke: [
-      { icon: '🧩', text: 'Te črke ne gredo skupaj!' }
+      { icon: 'puzzle', text: 'Te črke ne gredo skupaj!' }
     ],
     kratek: [
-      { icon: '✏️', text: 'Prekratko!' }
+      { icon: 'edit', text: 'Prekratko!' }
     ]
   };
 
@@ -216,13 +221,13 @@
 
   function submit(word) {
     var res = state.game.submit(word);
-    var variants = FEEDBACK[res.kind] || [{ icon: '❔', text: res.kind }];
+    var variants = FEEDBACK[res.kind] || [{ icon: 'think', text: res.kind }];
     var pick = variants[Math.floor(Math.random() * variants.length)];
     if (res.kind === 'neznan' && heartsOn()) {
       hearts.lose();
       renderHearts();
       if (hearts.isOut()) { showOutOfHearts(); return; }
-      toast(pick.icon, pick.text.split('{w}').join(res.word) + ' -1 ❤️');
+      toast(pick.icon, pick.text.split('{w}').join(res.word) + ' -1 srček');
       return;
     }
     toast(pick.icon, pick.text.split('{w}').join(res.word));
@@ -249,9 +254,11 @@
   function refresh() {
     renderBoard(state.builtByKey[currentKey()], state.game.revealedCells());
     var c = state.game.counts();
-    el.foundCount.textContent = '🎯 ' + c.found + ' / ' + c.target;
-    el.bonusCount.textContent = '⭐ ' + c.bonus;
-    el.levelLabel.textContent = '🚩 Stopnja ' + (save.pos + 1) + ' / ' + save.order.length;
+    label(el.foundCount, 'target', ' ' + c.found + ' / ' + c.target);
+    el.foundCount.setAttribute('aria-label', 'Najdene besede: ' + c.found + ' od ' + c.target);
+    label(el.bonusCount, 'star', ' ' + c.bonus);
+    el.bonusCount.setAttribute('aria-label', 'Dodatne besede: ' + c.bonus);
+    label(el.levelLabel, 'flag', ' Stopnja ' + (save.pos + 1) + ' / ' + save.order.length);
     el.progressFill.style.width = ((save.pos) / save.order.length * 100) + '%';
   }
 
@@ -281,11 +288,13 @@
   function renderHearts() {
     if (!heartsOn()) { el.hearts.hidden = true; return; }
     el.hearts.hidden = false;
-    el.hearts.textContent = '❤️'.repeat(hearts.left()) + '🤍'.repeat(hearts.max() - hearts.left());
+    el.hearts.innerHTML = icon('heart').repeat(hearts.left()) + '<span class="hearts-empty">' + icon('heart-outline').repeat(hearts.max() - hearts.left()) + '</span>';
+    el.hearts.setAttribute('aria-label', 'Srčki: ' + hearts.left() + ' od ' + hearts.max());
   }
 
   function renderHeartsToggle() {
-    el.toggleHearts.textContent = heartsOn() ? '❤️ Srčki: VKLOP' : '🤍 Srčki: IZKLOP';
+    label(el.toggleHearts, heartsOn() ? 'heart' : 'heart-outline', heartsOn() ? ' Srčki: VKLOP' : ' Srčki: IZKLOP');
+    el.toggleHearts.setAttribute('aria-pressed', String(heartsOn()));
   }
 
   function onToggleHearts() {
@@ -295,7 +304,7 @@
     persist();
     renderHearts();
     renderHeartsToggle();
-    toast(heartsOn() ? '❤️' : '🤍', heartsOn() ? 'Srčki vklopljeni! Napačna beseda = -1 ❤️' : 'Srčki izklopljeni.');
+    toast(heartsOn() ? 'heart' : 'heart-outline', heartsOn() ? 'Srčki vklopljeni! Napačna beseda = -1 srček.' : 'Srčki izklopljeni.');
   }
 
   /* Ob 0 srckih: nic samodejnega - otrok sam izbere, ali poskusi znova ali odpre meni. */
@@ -312,7 +321,7 @@
       btn.type = 'button';
       btn.className = 'level-tile' + (done ? ' done' : '') + (i === save.pos ? ' current' : '');
       btn.innerHTML = '<span class="tile-num">' + (i + 1) + '</span><span class="tile-icon">' +
-        (done ? '✅' : (i === save.pos ? '▶️' : '🧩')) + '</span>';
+        icon(done ? 'check' : (i === save.pos ? 'play' : 'puzzle')) + '</span>';
       btn.setAttribute('aria-label', 'Stopnja ' + (i + 1) + (done ? ' (končana)' : ''));
       btn.addEventListener('click', function () {
         el.levelMenu.hidden = true;
@@ -326,7 +335,7 @@
     if (!state || !state.game) return;
     renderLevelMenu();
     resetArmed = false;
-    el.resetGame.textContent = '🔄 Začni od začetka';
+    label(el.resetGame, 'retry', ' Začni od začetka');
     el.resetGame.classList.remove('armed');
     renderHeartsToggle();
     el.levelMenu.hidden = false;
@@ -337,12 +346,12 @@
   function onResetGame() {
     if (!resetArmed) {
       resetArmed = true;
-      el.resetGame.textContent = '⚠️ Res pobrisati vse? Tapni še enkrat!';
+      label(el.resetGame, 'warning', ' Res pobrisati vse? Tapni še enkrat!');
       el.resetGame.classList.add('armed');
       if (resetTimer) clearTimeout(resetTimer);
       resetTimer = setTimeout(function () {
         resetArmed = false;
-        el.resetGame.textContent = '🔄 Začni od začetka';
+        label(el.resetGame, 'retry', ' Začni od začetka');
         el.resetGame.classList.remove('armed');
       }, 3500);
       return;
@@ -354,7 +363,7 @@
     save.pos = 0;
     el.levelMenu.hidden = true;
     startLevel(0);
-    toast('🔄', 'Začetek! Vse besede so pobrisane.');
+    toast('retry', 'Začetek! Vse besede so pobrisane.');
   }
 
   function newGame() {
@@ -443,7 +452,7 @@
       try { rawSave = window.localStorage.getItem(SAVE_KEY); } catch (e) {}
       save = Wonnect.loadSaveRaw(rawSave, Wonnect.lettersSignature(alphabet, words), result.keys, state.keys12, newSeed());
       startLevel(save.pos);
-      if (result.errors.length) toast('⚠️', result.errors.length + ' stopnja(e) preskočena(e).');
+      if (result.errors.length) toast('warning', result.errors.length + ' stopnja(e) preskočena(e).');
     }).catch(function (err) {
       showError('Podatkov ni bilo mogoče naložiti: ' + err.message);
     });
@@ -468,7 +477,7 @@
     hearts.retry();
     renderHearts();
     el.outOfHearts.hidden = true;
-    toast('💪', 'Novi srčki! Poskusi še enkrat.');
+    toast('retry', 'Novi srčki! Poskusi še enkrat.');
   });
   document.getElementById('hearts-menu').addEventListener('click', function () {
     hearts.retry();
