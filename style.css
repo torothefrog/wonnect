@@ -238,7 +238,7 @@ body {
 
 #hud { display: flex; justify-content: space-between; color: var(--muted); font-size: 0.9rem; padding: 6px 4px 0; }
 
-#level-menu, #out-of-hearts, #level-complete, #all-complete, #load-error {
+#level-menu, #profile-menu, #out-of-hearts, #level-complete, #all-complete, #load-error {
   position: fixed;
   inset: 0;
   background: rgba(8, 10, 30, 0.78);
@@ -249,7 +249,7 @@ body {
   z-index: 10;
   backdrop-filter: blur(3px);
 }
-#level-menu[hidden], #out-of-hearts[hidden], #level-complete[hidden], #all-complete[hidden], #load-error[hidden] { display: none; }
+#level-menu[hidden], #profile-menu[hidden], #out-of-hearts[hidden], #level-complete[hidden], #all-complete[hidden], #load-error[hidden] { display: none; }
 #out-of-hearts .card button { width: 100%; margin-top: 10px; }
 #out-of-hearts .secondary-btn {
   background: rgba(255,255,255,0.12);
@@ -464,3 +464,18 @@ button:focus-visible { outline: 3px solid var(--accent2); outline-offset: 3px; }
   #wheel { width: min(76vw, 300px, 31dvh); }
   .letter { width: 48px; height: 48px; margin: -24px 0 0 -24px; }
 }
+
+#profile-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; max-height: 38dvh; overflow-y: auto; }
+#profile-list button {
+  width: 100%; border: 2px solid transparent; border-radius: 12px; padding: 10px 12px;
+  font-size: 1rem; font-weight: 800; cursor: pointer; background: var(--cell); color: var(--text);
+  display: flex; align-items: center; gap: 8px; text-align: left; text-transform: uppercase;
+}
+#profile-list button.current { border-color: #ffd166; background: linear-gradient(160deg, #ffd166, #ff9e40); color: #3a2b00; }
+#profile-list .p-meta { margin-left: auto; font-size: 0.8rem; opacity: 0.8; }
+#profile-name {
+  width: 100%; box-sizing: border-box; border: 2px solid rgba(255,255,255,0.2); border-radius: 12px;
+  padding: 12px; font: inherit; font-size: 1rem; font-weight: 800; text-transform: uppercase;
+  background: rgba(255,255,255,0.06); color: var(--text); margin-bottom: 10px;
+}
+@media (max-height: 520px) { #profile-list { max-height: 24dvh; } #profile-name { padding: 8px; margin-bottom: 6px; } }

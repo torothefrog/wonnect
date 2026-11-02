@@ -11,7 +11,7 @@
 <meta name="description" content="Slovenska igra povezovanja črk: sestavi besede in zapolni križanko.">
 <link rel="icon" href="assets/favicon.svg">
 <link rel="preload" href="assets/fonts/nunito-latin-ext.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="style.css?v=8">
+<link rel="stylesheet" href="style.css?v=9">
 </head>
 <body>
 <main id="app">
@@ -52,9 +52,20 @@
     <div class="card menu-card">
       <h2><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor"><path d="M0 0h24v24H0z" fill="none"/><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/></svg> Stopnje</h2>
       <div id="level-grid"></div>
+      <button id="open-profiles" type="button" class="hearts-btn"></button>
       <button id="toggle-hearts" type="button" class="hearts-btn"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor"><path d="M0 0h24v24H0z" fill="none"/><path d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z"/></svg> Srčki: IZKLOP</button>
       <button id="reset-game" type="button" class="reset-btn"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor"><path d="M0 0h24v24H0z" fill="none"/><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg> Začni od začetka</button>
       <button id="menu-close" type="button" class="close-btn"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg> Zapri</button>
+    </div>
+  </div>
+
+  <div id="profile-menu" hidden>
+    <div class="card menu-card">
+      <h2 id="profile-title"></h2>
+      <div id="profile-list"></div>
+      <input id="profile-name" type="text" maxlength="12" autocomplete="off" autocapitalize="characters" placeholder="IME IGRALCA" aria-label="Ime igralca">
+      <button id="profile-add" type="button" class="hearts-btn"></button>
+      <button id="profile-close" type="button" class="close-btn"></button>
     </div>
   </div>
 
@@ -91,8 +102,8 @@
     </div>
   </div>
 </main>
-<script src="icons.js?v=5"></script>
+<script src="icons.js?v=6"></script>
 <script src="game.js?v=4"></script>
-<script src="app.js?v=8"></script>
+<script src="app.js?v=9"></script>
 </body>
 </html>

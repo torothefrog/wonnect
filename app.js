@@ -6,7 +6,32 @@
     node.innerHTML = icon(name);
     node.appendChild(document.createTextNode(text));
   }
-  var SAVE_KEY = 'wonnect-napredek-v1';
+  var LEGACY_KEY = 'wonnect-napredek-v1';
+  var PROFILES_KEY = 'wonnect-profili-v1';
+  var SAVE_KEY = LEGACY_KEY; /* ključ shrambe aktivnega igralca */
+  var profiles = null; /* { active, profiles: [{ id, name, key }] } */
+
+  /* Prvi igralec uporablja stari ključ, zato obstoječi napredek ostane nedotaknjen. */
+  function loadProfiles() {
+    var p = null;
+    try { p = JSON.parse(window.localStorage.getItem(PROFILES_KEY)); } catch (e) {}
+    if (!p || !Array.isArray(p.profiles) || !p.profiles.length) {
+      p = { active: 'p1', profiles: [{ id: 'p1', name: 'Igralec 1', key: LEGACY_KEY }] };
+    }
+    if (!p.profiles.some(function (x) { return x.id === p.active; })) p.active = p.profiles[0].id;
+    return p;
+  }
+  function saveProfiles() {
+    try { window.localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles)); } catch (e) { /* brez shrambe */ }
+  }
+  function activeProfile() {
+    return profiles.profiles.filter(function (x) { return x.id === profiles.active; })[0];
+  }
+  function readSaveFor(key) {
+    var raw = null;
+    try { raw = window.localStorage.getItem(key); } catch (e) {}
+    return Wonnect.loadSaveRaw(raw, state.sig, state.keys, state.keys12, newSeed());
+  }
 
   var el = {
     board: document.getElementById('board'),
@@ -340,7 +365,71 @@
     label(el.resetGame, 'retry', ' Začni od začetka');
     el.resetGame.classList.remove('armed');
     renderHeartsToggle();
+    renderProfileButton();
     el.levelMenu.hidden = false;
+  }
+
+  function renderProfileButton() {
+    label(document.getElementById('open-profiles'), 'person', ' Igralec: ' + activeProfile().name);
+  }
+
+  var profileMenu = document.getElementById('profile-menu');
+  var profileList = document.getElementById('profile-list');
+  var profileName = document.getElementById('profile-name');
+  function renderProfileMenu() {
+    label(document.getElementById('profile-title'), 'person', ' Igralci');
+    label(document.getElementById('profile-add'), 'add', ' Nov igralec');
+    label(document.getElementById('profile-close'), 'close', ' Zapri');
+    profileList.innerHTML = '';
+    profiles.profiles.forEach(function (p) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = p.id === profiles.active ? 'current' : '';
+      b.innerHTML = icon(p.id === profiles.active ? 'check' : 'person');
+      b.appendChild(document.createTextNode(p.name));
+      var meta = document.createElement('span');
+      meta.className = 'p-meta';
+      var done = 0;
+      try {
+        var d = (p.id === profiles.active) ? save : JSON.parse(window.localStorage.getItem(p.key));
+        Object.keys((d && d.levels) || {}).forEach(function (k) { if (d.levels[k].complete) done++; });
+      } catch (e) {}
+      meta.textContent = done + ' / ' + (state.keys12.length);
+      b.appendChild(meta);
+      b.addEventListener('click', function () { switchProfile(p.id); });
+      profileList.appendChild(b);
+    });
+  }
+  function openProfileMenu() {
+    renderProfileMenu();
+    profileName.value = '';
+    profileMenu.hidden = false;
+  }
+  function switchProfile(id) {
+    if (id === profiles.active) { profileMenu.hidden = true; return; }
+    persist();
+    profiles.active = id;
+    SAVE_KEY = activeProfile().key;
+    saveProfiles();
+    save = readSaveFor(SAVE_KEY);
+    profileMenu.hidden = true;
+    el.levelMenu.hidden = true;
+    startLevel(save.pos);
+    toast('person', 'Igralec: ' + activeProfile().name);
+  }
+  function addProfile() {
+    var name = profileName.value.replace(/\s+/g, ' ').trim();
+    if (!name) { profileName.focus(); return; }
+    var clash = profiles.profiles.some(function (p) { return p.name.toLocaleUpperCase('sl') === name.toLocaleUpperCase('sl'); });
+    if (clash) { profileName.value = ''; profileName.placeholder = 'IME ŽE OBSTAJA'; profileName.focus(); return; }
+    var n = 2;
+    var ids = profiles.profiles.map(function (p) { return p.id; });
+    while (ids.indexOf('p' + n) !== -1) n++;
+    var id = 'p' + n;
+    profiles.profiles.push({ id: id, name: name, key: LEGACY_KEY + '-' + id });
+    saveProfiles();
+    try { window.localStorage.removeItem(LEGACY_KEY + '-' + id); } catch (e) {}
+    switchProfile(id);
   }
 
   var resetArmed = false;
@@ -348,7 +437,7 @@
   function onResetGame() {
     if (!resetArmed) {
       resetArmed = true;
-      label(el.resetGame, 'warning', ' Res pobrisati vse? Tapni še enkrat!');
+      label(el.resetGame, 'warning', ' Res pobrisati igralca? Tapni še enkrat!');
       el.resetGame.classList.add('armed');
       if (resetTimer) clearTimeout(resetTimer);
       resetTimer = setTimeout(function () {
@@ -446,13 +535,15 @@
       }
       if (result.errors.length) console.warn(result.errors.join('\n'));
       state = {
+        sig: Wonnect.lettersSignature(alphabet, words),
         builtByKey: result.builtByKey,
         keys: result.keys,
         keys12: result.keys.slice(0, 12)
       };
-      var rawSave = null;
-      try { rawSave = window.localStorage.getItem(SAVE_KEY); } catch (e) {}
-      save = Wonnect.loadSaveRaw(rawSave, Wonnect.lettersSignature(alphabet, words), result.keys, state.keys12, newSeed());
+      profiles = loadProfiles();
+      SAVE_KEY = activeProfile().key;
+      save = readSaveFor(SAVE_KEY);
+      saveProfiles();
       startLevel(save.pos);
       if (result.errors.length) toast('warning', result.errors.length + ' stopnja(e) preskočena(e).');
     }).catch(function (err) {
@@ -474,6 +565,11 @@
   document.getElementById('menu-btn').addEventListener('click', openLevelMenu);
   document.getElementById('menu-close').addEventListener('click', function () { el.levelMenu.hidden = true; });
   el.resetGame.addEventListener('click', onResetGame);
+  document.getElementById('open-profiles').addEventListener('click', openProfileMenu);
+  document.getElementById('profile-add').addEventListener('click', addProfile);
+  document.getElementById('profile-close').addEventListener('click', function () { profileMenu.hidden = true; });
+  profileName.addEventListener('keydown', function (e) { if (e.key === 'Enter') addProfile(); });
+  profileMenu.addEventListener('click', function (e) { if (e.target === profileMenu) profileMenu.hidden = true; });
   el.toggleHearts.addEventListener('click', onToggleHearts);
   document.getElementById('hearts-retry').addEventListener('click', function () {
     hearts.retry();
