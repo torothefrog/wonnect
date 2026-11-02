@@ -6,3 +6,4 @@ Toro's confirmed direction, 2 November 2026:
 - Keep the game mobile/tablet friendly, with localStorage progress preserved across UI-only changes. Do not change the save key, data signature, or level content for visual updates.
 - Keep child-friendly icon cues, persistent tap-to-dismiss feedback, visible shuffle animation, level selection, two-step reset, optional 10-heart mode and explicit retry/menu at zero hearts.
 - Roboto Mono remains the separate rule for documents and spreadsheets, not this game's UI.
+- Show all visible game text in UPPERCASE for children learning to read, including menus, buttons, headings and feedback. Keep the underlying Slovenian text and save semantics intact.

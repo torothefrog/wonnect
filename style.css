@@ -449,3 +449,13 @@ button:focus-visible { outline: 3px solid var(--accent2); outline-offset: 3px; }
   #level-grid .level-tile { min-height: 44px; }
   #level-grid { margin-bottom: 8px; }
 }
+/* Toro: all visible game text in capitals, including menus and feedback. */
+#app { text-transform: uppercase; }
+#level-label { font-size: 0.78rem; font-weight: 700; }
+#top h1 { font-size: 1.25rem; }
+#toast { font-size: 0.95rem; }
+@media (max-width: 380px) {
+  #level-label { font-size: 0.7rem; }
+  #top h1 { font-size: 1.1rem; }
+}
+@media (max-height: 780px) { #toast { font-size: 0.85rem; } }
