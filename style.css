@@ -460,3 +460,7 @@ button:focus-visible { outline: 3px solid var(--accent2); outline-offset: 3px; }
 }
 @media (max-height: 780px) { #toast { font-size: 0.85rem; } }
 #app button { text-transform: uppercase; }
+@media (orientation: portrait) and (max-height: 700px) {
+  #wheel { width: min(76vw, 300px, 31dvh); }
+  .letter { width: 48px; height: 48px; margin: -24px 0 0 -24px; }
+}

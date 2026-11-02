@@ -93,11 +93,12 @@
   }
 
   function sizeCells(g) {
-    var w = el.boardWrap.clientWidth - 16;
-    var h = el.boardWrap.clientHeight - 16;
+    var pad = window.getComputedStyle(el.boardWrap);
+    var w = el.boardWrap.clientWidth - parseFloat(pad.paddingLeft) - parseFloat(pad.paddingRight) - 12;
+    var h = el.boardWrap.clientHeight - parseFloat(pad.paddingTop) - parseFloat(pad.paddingBottom) - 12;
     var gap = 5;
     var size = Math.floor(Math.min((w - gap * (g.cols - 1)) / g.cols, (h - gap * (g.rows - 1)) / g.rows, 58));
-    if (size < 22) size = 22;
+    if (size < 16) size = 16;
     el.board.style.setProperty('--cell-size', size + 'px');
   }
 
@@ -490,6 +491,17 @@
   window.addEventListener('resize', function () {
     if (state && state.game) renderBoard(state.builtByKey[currentKey()], state.game.revealedCells());
   });
+
+  if (window.ResizeObserver) {
+    new ResizeObserver(function () {
+      if (state && state.game) sizeCells(state.builtByKey[currentKey()].grid);
+    }).observe(el.boardWrap);
+  }
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(function () {
+      if (state && state.game) sizeCells(state.builtByKey[currentKey()].grid);
+    });
+  }
 
   boot();
 })();
