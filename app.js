@@ -23,6 +23,7 @@
     resetGame: document.getElementById('reset-game'),
     toggleHearts: document.getElementById('toggle-hearts'),
     hearts: document.getElementById('hearts'),
+    outOfHearts: document.getElementById('out-of-hearts'),
     loadError: document.getElementById('load-error'),
     loadErrorMsg: document.getElementById('load-error-msg')
   };
@@ -217,9 +218,14 @@
     var res = state.game.submit(word);
     var variants = FEEDBACK[res.kind] || [{ icon: '❔', text: res.kind }];
     var pick = variants[Math.floor(Math.random() * variants.length)];
-    var heartOut = false;
-    if (res.kind === 'neznan' && heartsOn()) heartOut = loseHeart();
-    if (!heartOut) toast(pick.icon, pick.text.split('{w}').join(res.word) + (heartsOn() && res.kind === 'neznan' ? ' -1 ❤️' : ''));
+    if (res.kind === 'neznan' && heartsOn()) {
+      hearts.lose();
+      renderHearts();
+      if (hearts.isOut()) { showOutOfHearts(); return; }
+      toast(pick.icon, pick.text.split('{w}').join(res.word) + ' -1 ❤️');
+      return;
+    }
+    toast(pick.icon, pick.text.split('{w}').join(res.word));
     if (res.kind === 'zadetek' || res.kind === 'bonus') {
       var key = currentKey();
       var rec = save.levels[key] || (save.levels[key] = { found: [], bonus: [], complete: false });
@@ -260,22 +266,22 @@
       (rec.found || []).forEach(function (w) { state.game.submit(w); });
       (rec.bonus || []).forEach(function (w) { state.game.submit(w); });
     }
-    heartsLeft = HEARTS_MAX;
+    hearts.retry();
+    el.outOfHearts.hidden = true;
     renderWheel(built.letters);
     refresh();
     renderHearts();
     persist();
   }
 
-  var HEARTS_MAX = 10;
-  var heartsLeft = HEARTS_MAX;
+  var hearts = Wonnect.createHearts(10);
 
   function heartsOn() { return !!(save && save.heartsMode); }
 
   function renderHearts() {
     if (!heartsOn()) { el.hearts.hidden = true; return; }
     el.hearts.hidden = false;
-    el.hearts.textContent = '❤️'.repeat(heartsLeft) + '🤍'.repeat(HEARTS_MAX - heartsLeft);
+    el.hearts.textContent = '❤️'.repeat(hearts.left()) + '🤍'.repeat(hearts.max() - hearts.left());
   }
 
   function renderHeartsToggle() {
@@ -284,23 +290,17 @@
 
   function onToggleHearts() {
     save.heartsMode = !heartsOn();
-    heartsLeft = HEARTS_MAX;
+    hearts.retry();
+    el.outOfHearts.hidden = true;
     persist();
     renderHearts();
     renderHeartsToggle();
     toast(heartsOn() ? '❤️' : '🤍', heartsOn() ? 'Srčki vklopljeni! Napačna beseda = -1 ❤️' : 'Srčki izklopljeni.');
   }
 
-  function loseHeart() {
-    heartsLeft = Math.max(0, heartsLeft - 1);
-    renderHearts();
-    if (heartsLeft === 0) {
-      heartsLeft = HEARTS_MAX;
-      renderHearts();
-      toast('💔', 'Srčki so šli! Nič hudega - dobiš nove! 💪');
-      return true;
-    }
-    return false;
+  /* Ob 0 srckih: nic samodejnega - otrok sam izbere, ali poskusi znova ali odpre meni. */
+  function showOutOfHearts() {
+    el.outOfHearts.hidden = false;
   }
 
   function renderLevelMenu() {
@@ -464,6 +464,18 @@
   document.getElementById('menu-close').addEventListener('click', function () { el.levelMenu.hidden = true; });
   el.resetGame.addEventListener('click', onResetGame);
   el.toggleHearts.addEventListener('click', onToggleHearts);
+  document.getElementById('hearts-retry').addEventListener('click', function () {
+    hearts.retry();
+    renderHearts();
+    el.outOfHearts.hidden = true;
+    toast('💪', 'Novi srčki! Poskusi še enkrat.');
+  });
+  document.getElementById('hearts-menu').addEventListener('click', function () {
+    hearts.retry();
+    renderHearts();
+    el.outOfHearts.hidden = true;
+    openLevelMenu();
+  });
   el.levelMenu.addEventListener('click', function (e) { if (e.target === el.levelMenu) el.levelMenu.hidden = true; });
   window.addEventListener('resize', function () {
     if (state && state.game) renderBoard(state.builtByKey[currentKey()], state.game.revealedCells());

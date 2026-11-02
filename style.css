@@ -228,7 +228,7 @@ body {
 
 #hud { display: flex; justify-content: space-between; color: var(--muted); font-size: 0.9rem; padding: 6px 4px 0; }
 
-#level-menu, #level-complete, #all-complete, #load-error {
+#level-menu, #out-of-hearts, #level-complete, #all-complete, #load-error {
   position: fixed;
   inset: 0;
   background: rgba(8, 10, 30, 0.78);
@@ -239,7 +239,13 @@ body {
   z-index: 10;
   backdrop-filter: blur(3px);
 }
-#level-menu[hidden], #level-complete[hidden], #all-complete[hidden], #load-error[hidden] { display: none; }
+#level-menu[hidden], #out-of-hearts[hidden], #level-complete[hidden], #all-complete[hidden], #load-error[hidden] { display: none; }
+#out-of-hearts .card button { width: 100%; margin-top: 10px; }
+#out-of-hearts .secondary-btn {
+  background: rgba(255,255,255,0.12);
+  color: var(--text);
+  box-shadow: none;
+}
 .menu-card { max-width: 360px; width: 100%; }
 #level-grid {
   display: grid;

@@ -305,7 +305,22 @@
     return idx.slice(0, Math.max(0, Math.min(count, poolSize)));
   }
 
+  /* Nacin s srcki: cista logika stetja. srci se NE polnijo sami -
+     ob 0 je igralec 'brez srckov', dokler ne izbere retry (ali zamenja stopnjo). */
+  function createHearts(max) {
+    const cap = max || 10;
+    let left = cap;
+    return {
+      left: function () { return left; },
+      max: function () { return cap; },
+      lose: function () { if (left > 0) left--; return left; },
+      isOut: function () { return left === 0; },
+      retry: function () { left = cap; return left; }
+    };
+  }
+
   return {
+    createHearts: createHearts,
     mulberry32: mulberry32,
     levelKey: levelKey,
     selectLevelOrder: selectLevelOrder,

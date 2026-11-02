@@ -155,6 +155,38 @@ levels.forEach((lv, i) => {
   eq(r1.order, r2.order, 'svezha igra z istim seed-om = enak vrstni red');
 }
 
-console.log('');
+/* --- nacin s srcki (cista logika) --- */
+{
+  const h = W.createHearts(10);
+  eq(h.left(), 10, 'srcki: zacetek s polnim stetjem');
+  eq(h.isOut(), false, 'srcki: ni prazno na zacetku');
+  h.lose();
+  eq(h.left(), 9, 'srcki: napacna beseda vzame 1');
+  for (let i = 0; i < 20; i++) h.lose();
+  eq(h.left(), 0, 'srcki: ne gre pod 0');
+  eq(h.isOut(), true, 'srcki: prazno ob 0');
+  eq(h.retry(), 10, 'srcki: retry napolni nazaj na 10');
+  eq(h.isOut(), false, 'srcki: po retry ni vec prazno');
+  const h3 = W.createHearts(3);
+  h3.lose(); h3.lose(); h3.lose();
+  eq(h3.isOut(), true, 'srcki: poljubno maksimum (3) se uposteva');
+}
+
+/* --- napredek stopnje in nacin preziveta nalaganje shrambe --- */
+{
+  const sig = W.lettersSignature(['A'], ['A']);
+  const save = W.freshSave(sig, ['k1', 'k2'], 7);
+  save.levels['k1'] = { found: ['AB'], bonus: ['BA'], complete: false };
+  save.heartsMode = true;
+  const loaded = W.loadSaveRaw(JSON.stringify(save), sig, ['k1', 'k2'], ['k1', 'k2'], 9);
+  eq(loaded.levels['k1'].found, ['AB'], 'shramba: najdene besede se ohranijo');
+  eq(loaded.levels['k1'].bonus, ['BA'], 'shramba: dodatne besede se ohranijo');
+  eq(loaded.heartsMode, true, 'shramba: nastavitev srckov se ohrani');
+  eq(loaded.v, 2, 'shramba: razlicica ostane 2');
+  const loaded2 = W.loadSaveRaw(JSON.stringify(save), 'drug-sig', ['k1', 'k2'], ['k1', 'k2'], 9);
+  eq(Object.keys(loaded2.levels).length, 0, 'shramba: sprememba podatkov ponastavi najdbe, izbira stopenj ostane');
+  eq(loaded2.order, save.order, 'shramba: izbira 12 stopenj se ohrani ob spremembi podatkov');
+}
+
 console.log(passed + ' opravljenih, ' + failed + ' padlih');
-process.exit(failed ? 1 : 0);
+if (failed) process.exit(1);
