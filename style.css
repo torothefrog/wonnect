@@ -35,6 +35,7 @@ body {
   -webkit-user-select: none;
 }
 #app {
+  position: relative;
   height: 100dvh;
   overflow: hidden;
   display: flex;
@@ -355,6 +356,15 @@ body {
 /* Lezeci zasloni (tablica/telefon na sirino): plosca levo, kolo desno */
 @media (orientation: landscape) and (max-height: 620px) {
   #app { max-width: 900px; }
+  #hearts {
+    position: absolute;
+    top: calc(46px + var(--sat));
+    left: 14px;
+    z-index: 2;
+    margin: 0;
+    text-align: left;
+    pointer-events: none;
+  }
   #hearts {
   text-align: center;
   font-size: 0.95rem;
