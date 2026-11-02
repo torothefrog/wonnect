@@ -16,15 +16,19 @@
 <main id="app">
   <header id="top">
     <h1>Wonnect</h1>
-    <div id="level-label">Stopnja 1</div>
+    <div id="top-right">
+      <div id="level-label">Stopnja 1</div>
+      <button id="menu-btn" type="button" aria-label="Meni stopenj" title="Meni stopenj">🗺️</button>
+    </div>
   </header>
   <div id="progress"><div id="progress-fill"></div></div>
+  <div id="hearts" hidden aria-label="Srčki"></div>
 
   <section id="board-wrap" aria-label="Križanka">
     <div id="board"></div>
   </section>
 
-  <div id="toast" role="status" aria-live="polite"></div>
+  <div id="toast" role="status" aria-live="polite"><span id="toast-icon" aria-hidden="true"></span><span id="toast-text"></span><span id="toast-close" aria-hidden="true">✕</span></div>
 
   <section id="wheel-wrap" aria-label="Kolo črk">
     <div id="current-word" aria-live="polite"></div>
@@ -43,12 +47,22 @@
     <span id="bonus-count"></span>
   </footer>
 
+  <div id="level-menu" hidden>
+    <div class="card menu-card">
+      <h2>🗺️ Stopnje</h2>
+      <div id="level-grid"></div>
+      <button id="toggle-hearts" type="button" class="hearts-btn">🤍 Srčki: IZKLOP</button>
+      <button id="reset-game" type="button" class="reset-btn">🔄 Začni od začetka</button>
+      <button id="menu-close" type="button" class="close-btn">✕ Zapri</button>
+    </div>
+  </div>
+
   <div id="level-complete" hidden>
     <div class="card">
       <h2>Stopnja končana! 🎉</h2>
       <p id="complete-stats"></p>
       <p id="complete-bonus"></p>
-      <button id="next-level" type="button">Naslednja stopnja</button>
+      <button id="next-level" type="button">➡️ Naslednja stopnja</button>
     </div>
   </div>
 
