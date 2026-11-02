@@ -459,3 +459,4 @@ button:focus-visible { outline: 3px solid var(--accent2); outline-offset: 3px; }
   #top h1 { font-size: 1.1rem; }
 }
 @media (max-height: 780px) { #toast { font-size: 0.85rem; } }
+#app button { text-transform: uppercase; }
