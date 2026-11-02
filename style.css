@@ -381,6 +381,6 @@ body {
   #top, #progress { flex: 0 0 100%; }
   #toast { flex: 0 0 100%; order: 3; }
   #hud { flex: 0 0 100%; order: 4; }
-  #wheel { width: min(38vw, 240px); }
+  #wheel { width: min(38vw, 42dvh, 240px); }
   .letter { width: 54px; height: 54px; margin: -27px 0 0 -27px; font-size: 1.3rem; }
 }
