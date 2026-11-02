@@ -95,7 +95,8 @@
   function sizeCells(g) {
     var w = el.boardWrap.clientWidth - 16;
     var h = el.boardWrap.clientHeight - 16;
-    var size = Math.floor(Math.min(w / g.cols, h / g.rows, 58));
+    var gap = 5;
+    var size = Math.floor(Math.min((w - gap * (g.cols - 1)) / g.cols, (h - gap * (g.rows - 1)) / g.rows, 58));
     if (size < 22) size = 22;
     el.board.style.setProperty('--cell-size', size + 'px');
   }
