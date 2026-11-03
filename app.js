@@ -133,7 +133,7 @@
     el.lines.innerHTML = '';
     letterButtons = [];
     var n = letters.length;
-    var radius = 38;
+    var radius = 31;
     letters.forEach(function (ch, i) {
       var angle = -Math.PI / 2 + (i * 2 * Math.PI) / n;
       var b = document.createElement('button');
@@ -179,6 +179,22 @@
     redrawLines(null);
   }
 
+  /* Preklic z vleko: spusti zunaj kolesa = preklici izbor, spusti znotraj = oddaj. */
+  var cancelArmed = false;
+  function isOutsideWheel(x, y) {
+    var rect = el.wheel.getBoundingClientRect();
+    var cx = rect.left + rect.width / 2;
+    var cy = rect.top + rect.height / 2;
+    var dx = x - cx;
+    var dy = y - cy;
+    return Math.sqrt(dx * dx + dy * dy) > rect.width / 2;
+  }
+  function setCancelArmed(on) {
+    cancelArmed = on;
+    el.wheel.classList.toggle('cancel-armed', on);
+    el.current.classList.toggle('cancel-armed', on);
+  }
+
   function letterAt(x, y) {
     var t = document.elementFromPoint(x, y);
     if (t && t.classList && t.classList.contains('letter')) return t;
@@ -201,14 +217,18 @@
     if (!dragging) return;
     var b = letterAt(e.clientX, e.clientY);
     if (b && !sel.includes(b)) { sel.push(b); b.classList.add('on'); updateCurrent(); }
+    setCancelArmed(isOutsideWheel(e.clientX, e.clientY));
     redrawLines({ x: e.clientX, y: e.clientY });
   }
 
-  function onUp() {
+  function onUp(e) {
     if (!dragging) return;
     dragging = false;
+    var cancelled = !e || e.type !== 'pointerup' || isOutsideWheel(e.clientX, e.clientY);
     var word = el.current.textContent;
+    setCancelArmed(false);
     clearSel();
+    if (cancelled) return;
     if (word.length < 2) return;
     submit(word);
   }
@@ -556,7 +576,6 @@
   el.wheel.addEventListener('pointerup', onUp);
   el.wheel.addEventListener('pointercancel', onUp);
   shuffleBtn.addEventListener('click', shuffleWheel);
-  document.getElementById('clear').addEventListener('click', clearSel);
   document.getElementById('next-level').addEventListener('click', function () {
     if (save.pos + 1 < save.order.length) startLevel(save.pos + 1);
     else { el.complete.hidden = true; el.progressFill.style.width = '100%'; el.allComplete.hidden = false; }

@@ -10,7 +10,7 @@ Namenjena gostovanju na GitHub Pages; deluje na telefonih, tablicah in računaln
 
 - Povleci čez črke na kolesu in spusti, da oddaš besedo.
 - Ciljne besede zapolnijo križanko; druge veljavne slovenske besede štejejo kot dodatne (bonus).
-- 🔀 premeša črke, ✕ počisti trenutni izbor (izbrane črke na kolesu; napredka ne briše).
+- 🔀 premeša črke. Napačen izbor prekličeš tako, da palec/miško povlečeš izven kroga kolesa in spustiš; če spustiš znotraj kroga, se beseda odda.
 - Meni > IGRALEC: več igralcev na isti napravi, vsak ima svoj napredek (localStorage).
 - Ko je križanka polna, se odklene naslednja stopnja.
 

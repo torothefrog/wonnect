@@ -479,3 +479,13 @@ button:focus-visible { outline: 3px solid var(--accent2); outline-offset: 3px; }
   background: rgba(255,255,255,0.06); color: var(--text); margin-bottom: 10px;
 }
 @media (max-height: 520px) { #profile-list { max-height: 24dvh; } #profile-name { padding: 8px; margin-bottom: 6px; } }
+
+/* Preklic z vleko: kazalec zunaj kolesa = izbor se bo preklical. */
+#wheel.cancel-armed {
+  box-shadow: inset 0 0 0 3px #e2543e, 0 8px 30px rgba(0,0,0,0.35);
+}
+#current-word.cancel-armed {
+  color: var(--muted);
+  text-shadow: none;
+  text-decoration: line-through;
+}
