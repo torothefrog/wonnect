@@ -7,18 +7,18 @@
   font-display: swap;
 }
 :root {
-  --bg: #0e1230;
-  --bg2: #1b2350;
-  --card: #232c5e;
-  --accent: #ffb340;
+  --bg: #0b1d13;
+  --bg2: #123324;
+  --card: #1d5c38;
+  --accent: #7ee081;
   --accent2: #7ee0c2;
-  --text: #f4f6ff;
-  --muted: #a8b0d8;
-  --cell: #2b3670;
-  --cell-open: #ffd166;
-  --cell-open-text: #3a2b00;
-  --wheel-letter-a: #3d4aa0;
-  --wheel-letter-b: #5668d8;
+  --text: #e8f5e9;
+  --muted: #9fc8aa;
+  --cell: #1e4a30;
+  --cell-open: #7ee081;
+  --cell-open-text: #0b1d13;
+  --wheel-letter-a: #1d5c38;
+  --wheel-letter-b: #2e8b57;
   --sat: env(safe-area-inset-top, 0px);
   --sab: env(safe-area-inset-bottom, 0px);
 }
@@ -29,12 +29,12 @@ body {
   margin: 0;
   font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
   background:
-    radial-gradient(1.5px 1.5px at 12% 22%, rgba(255,255,255,0.8) 50%, transparent 51%),
-    radial-gradient(1px 1px at 68% 8%, rgba(255,255,255,0.6) 50%, transparent 51%),
-    radial-gradient(1.5px 1.5px at 85% 35%, rgba(255,255,255,0.7) 50%, transparent 51%),
-    radial-gradient(1px 1px at 35% 45%, rgba(255,255,255,0.5) 50%, transparent 51%),
-    radial-gradient(2px 2px at 50% 15%, rgba(255,255,255,0.7) 50%, transparent 51%),
-    radial-gradient(1px 1px at 90% 60%, rgba(255,255,255,0.5) 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 12% 22%, rgba(205,245,215,0.8) 50%, transparent 51%),
+    radial-gradient(1px 1px at 68% 8%, rgba(205,245,215,0.6) 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 85% 35%, rgba(205,245,215,0.7) 50%, transparent 51%),
+    radial-gradient(1px 1px at 35% 45%, rgba(205,245,215,0.5) 50%, transparent 51%),
+    radial-gradient(2px 2px at 50% 15%, rgba(205,245,215,0.7) 50%, transparent 51%),
+    radial-gradient(1px 1px at 90% 60%, rgba(205,245,215,0.5) 50%, transparent 51%),
     radial-gradient(140% 100% at 50% 0%, var(--bg2) 0%, var(--bg) 70%);
   color: var(--text);
   overscroll-behavior: none;
@@ -58,7 +58,7 @@ body {
   font-size: 1.35rem;
   margin: 0;
   letter-spacing: 0.025em;
-  background: linear-gradient(90deg, #ffd166, #ff9e40);
+  background: linear-gradient(90deg, #c9f2cb, #7ee081);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -86,7 +86,7 @@ body {
   height: 100%;
   width: 0;
   border-radius: 3px;
-  background: linear-gradient(90deg, #ffd166, #ff9e40);
+  background: linear-gradient(90deg, #c9f2cb, #7ee081);
   transition: width 0.4s ease;
 }
 
@@ -127,10 +127,10 @@ body {
   box-shadow: inset 0 0 0 1px rgba(255,255,255,0.07), 0 2px 4px rgba(0,0,0,0.25);
 }
 .cell.open {
-  background: linear-gradient(160deg, #ffe3a1, var(--cell-open));
+  background: linear-gradient(160deg, #d8f7da, var(--cell-open));
   color: var(--cell-open-text);
   animation: flip 0.35s ease;
-  box-shadow: 0 3px 8px rgba(255, 179, 64, 0.35);
+  box-shadow: 0 3px 8px rgba(126, 224, 129, 0.35);
 }
 @keyframes flip { 0% { transform: rotateX(90deg); } 100% { transform: rotateX(0); } }
 
@@ -143,8 +143,8 @@ body {
   margin: 2px 10px 4px;
   padding: 6px 14px;
   border-radius: 16px;
-  background: linear-gradient(170deg, #2b3670, #232c5e);
-  border: 2px solid rgba(255, 179, 64, 0.45);
+  background: linear-gradient(170deg, #1e4a30, #173324);
+  border: 2px solid rgba(126, 224, 129, 0.45);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
   font-weight: 700;
   font-size: 1.05rem;
@@ -183,7 +183,7 @@ body {
   color: var(--accent);
 }
 #current-word.active {
-  text-shadow: 0 0 14px rgba(255, 179, 64, 0.5);
+  text-shadow: 0 0 14px rgba(126, 224, 129, 0.5);
 }
 #wheel {
   position: relative;
@@ -217,10 +217,10 @@ body {
   touch-action: none;
 }
 .letter.on {
-  background: linear-gradient(160deg, #ffd166, #ff9e40);
-  color: #3a2b00;
+  background: linear-gradient(160deg, #d8f7da, #7ee081);
+  color: #0b1d13;
   transform: scale(1.1);
-  box-shadow: 0 0 18px rgba(255, 179, 64, 0.55);
+  box-shadow: 0 0 18px rgba(126, 224, 129, 0.55);
 }
 
 #wheel-actions { display: flex; gap: 16px; justify-content: center; padding: 10px 0 2px; }
@@ -241,7 +241,7 @@ body {
 #level-menu, #profile-menu, #out-of-hearts, #level-complete, #all-complete, #load-error {
   position: fixed;
   inset: 0;
-  background: rgba(8, 10, 30, 0.78);
+  background: rgba(5, 14, 9, 0.8);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -282,9 +282,9 @@ body {
 #level-grid .level-tile .tile-icon { font-size: 1.05rem; line-height: 1; }
 #level-grid .level-tile.done { background: linear-gradient(160deg, #2f6b4f, #25503c); }
 #level-grid .level-tile.current {
-  background: linear-gradient(160deg, #ffd166, #ff9e40);
-  color: #3a2b00;
-  box-shadow: 0 0 14px rgba(255, 179, 64, 0.5);
+  background: linear-gradient(160deg, #d8f7da, #7ee081);
+  color: #0b1d13;
+  box-shadow: 0 0 14px rgba(126, 224, 129, 0.5);
 }
 .menu-card .hearts-btn {
   width: 100%;
@@ -324,7 +324,7 @@ body {
   color: var(--muted);
 }
 .card {
-  background: linear-gradient(170deg, #2b3670, #1c2450);
+  background: linear-gradient(170deg, #1e4a30, #123324);
   border-radius: 18px;
   padding: 26px;
   text-align: center;
@@ -335,15 +335,15 @@ body {
 .card p { color: var(--text); }
 #complete-bonus { color: var(--accent2); font-size: 0.9rem; word-break: break-word; }
 .card button {
-  background: linear-gradient(160deg, #ffd166, #ff9e40);
-  color: #3a2b00;
+  background: linear-gradient(160deg, #d8f7da, #7ee081);
+  color: #0b1d13;
   border: none;
   border-radius: 12px;
   padding: 13px 24px;
   font-size: 1.05rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(255, 158, 64, 0.4);
+  box-shadow: 0 4px 12px rgba(126, 224, 129, 0.35);
 }
 .card button:active { transform: scale(0.97); }
 
@@ -471,7 +471,7 @@ button:focus-visible { outline: 3px solid var(--accent2); outline-offset: 3px; }
   font-size: 1rem; font-weight: 800; cursor: pointer; background: var(--cell); color: var(--text);
   display: flex; align-items: center; gap: 8px; text-align: left; text-transform: uppercase;
 }
-#profile-list button.current { border-color: #ffd166; background: linear-gradient(160deg, #ffd166, #ff9e40); color: #3a2b00; }
+#profile-list button.current { border-color: #7ee081; background: linear-gradient(160deg, #d8f7da, #7ee081); color: #0b1d13; }
 #profile-list .p-meta { margin-left: auto; font-size: 0.8rem; opacity: 0.8; }
 #profile-name {
   width: 100%; box-sizing: border-box; border: 2px solid rgba(255,255,255,0.2); border-radius: 12px;
